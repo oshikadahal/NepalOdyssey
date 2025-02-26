@@ -15,8 +15,9 @@ function Signin() {
     });
 
     useEffect(() => {
-        // Remove token when the sign-in page is opened
+        // Remove token and userId when the sign-in page is opened
         localStorage.removeItem('token');
+        localStorage.removeItem('userId');
         // Check if the page needs to be refreshed
         if (localStorage.getItem('refreshOnce') === 'true') {
             console.log('refreshOnce flag found');
@@ -47,7 +48,13 @@ function Signin() {
 
             if (response.ok) {
                 login(result.token, result.isAdmin);
+                localStorage.setItem('userId', result.userId); // Store user ID in local storage
                 alert(result.message);
+                if (result.isAdmin) {
+                    navigate('/admin');
+                } else {
+                    navigate('/');
+                }
             } else {
                 alert(result.error);
             }

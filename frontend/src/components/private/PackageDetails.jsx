@@ -1,4 +1,3 @@
-// filepath: /c:/Users/anils/OneDrive/Desktop/4feb/frontend/src/components/private/PackageDetails.jsx
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "./Navbar";
@@ -23,12 +22,7 @@ function PackageDetails() {
     useEffect(() => {
         const fetchPackageData = async () => {
             try {
-                const token = localStorage.getItem('token'); // Assuming the token is stored in localStorage
-                const response = await axios.get(`http://localhost:5000/packages/${packageId}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });                
+                const response = await axios.get(`http://localhost:5000/packages/${packageId}`);
                 console.log("Response data:", response.data); // Log the response data
                 setPackageData(response.data.data); // Extract the data property
                 setLoading(false);
@@ -67,14 +61,13 @@ function PackageDetails() {
                     <p>{packageData.description}</p>
                 </div>
 
-
-<div className="image-gallery">
-    {packageData.imageUrl.map((image, index) => {
-        const imageUrl = `http://localhost:5000/${image}`;
-        console.log("Image URL from database:", imageUrl); // Log the image URL from the database
-        return <img key={index} src={imageUrl} alt={`Image ${index + 1}`} />;
-    })}
-</div>
+                <div className="image-gallery">
+                    {packageData.imageUrl.map((image, index) => {
+                        const imageUrl = `http://localhost:5000/${image}`;
+                        console.log("Image URL from database:", imageUrl); // Log the image URL from the database
+                        return <img key={index} src={imageUrl} alt={`Image ${index + 1}`} />;
+                    })}
+                </div>
 
                 {/* Package Inclusions */}
                 <div className="package-inclusions">

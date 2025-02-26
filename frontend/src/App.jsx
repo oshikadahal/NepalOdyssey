@@ -35,6 +35,9 @@ import ContactMessages from './components/admin/ContactMessages';
 import PrivateRoute from './components/private/PrivateRoutes.jsx';
 // import ReviewList from './components/private/reviews.jsx';
 // import ReviewForm from './components/private/ReviewForm.jsx';
+import ManageReviews from './components/admin/ManageReviews.jsx';
+
+
 function App() {
   return (
     
@@ -77,6 +80,7 @@ function App() {
           <Route path="/admin/manage-packages" element={<PrivateRoute><ManagePackages /></PrivateRoute>} />
           <Route path="/admin/view-bookings" element={<PrivateRoute><ViewBookings /></PrivateRoute>} />
           <Route path="/admin/contact-messages" element={<PrivateRoute><ContactMessages /></PrivateRoute>} />
+          <Route path="/admin/manage-reviews" element={<PrivateRoute><ManageReviews /></PrivateRoute>} />
         </Routes>
         </AuthProvider>
       </Router>

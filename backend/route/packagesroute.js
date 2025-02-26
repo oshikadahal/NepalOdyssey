@@ -7,7 +7,7 @@ const router = express.Router();
 
 // Define routes
 router.get('/', packageController.getAllPackages); // Protect route with middleware
-router.get('/:id', authenticateToken, packageController.getPackageById); // Protect route with middleware
+router.get('/:id', packageController.getPackageById); // Protect route with middleware
 router.post('/', authenticateToken, upload.array('images', 6), packageController.createPackage); // Protect route with middleware
 router.put('/:id', authenticateToken, upload.array('images', 6), packageController.updatePackage); // Protect route with middleware
 router.delete('/:id', authenticateToken, packageController.deletePackage); // Protect route with middleware

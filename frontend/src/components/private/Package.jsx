@@ -9,7 +9,7 @@ import ReactStars from "react-rating-stars-component";
 
 function Package() {
     const navigate = useNavigate();
-    const { isAuthenticated, user } = useContext(AuthContext);
+    const { isAuthenticated } = useContext(AuthContext);
     const [packagesData, setPackagesData] = useState([]);
     const [reviews, setReviews] = useState([]);
     const [selectedPackage, setSelectedPackage] = useState('');
@@ -17,6 +17,7 @@ function Package() {
     const [rating, setRating] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const userId = localStorage.getItem('userId'); // Get user ID from local storage
 
     useEffect(() => {
         const fetchPackagesData = async () => {
@@ -34,19 +35,17 @@ function Package() {
     }, []);
 
     useEffect(() => {
-        if (selectedPackage) {
-            const fetchReviews = async () => {
-                try {
-                    const response = await axios.get(`http://localhost:5000/reviews?packageId=${selectedPackage}`);
-                    setReviews(response.data);
-                } catch (err) {
-                    console.error('Error fetching reviews:', err);
-                }
-            };
+        const fetchReviews = async () => {
+            try {
+                const response = await axios.get('http://localhost:5000/reviews');
+                setReviews(response.data);
+            } catch (err) {
+                console.error('Error fetching reviews:', err);
+            }
+        };
 
-            fetchReviews();
-        }
-    }, [selectedPackage]);
+        fetchReviews();
+    }, []);
 
     const handleReviewSubmit = async (e) => {
         e.preventDefault();
@@ -58,7 +57,7 @@ function Package() {
         try {
             const response = await axios.post('http://localhost:5000/reviews', {
                 packageId: selectedPackage,
-                userId: user.id,
+                userId: userId,
                 comment: reviewText,
                 rating: rating
             }, {
@@ -69,6 +68,7 @@ function Package() {
             setReviews([...reviews, response.data]);
             setReviewText('');
             setRating(0);
+            setSelectedPackage(''); // Reset the selected package
         } catch (err) {
             console.error('Error submitting review:', err);
         }
@@ -127,7 +127,7 @@ function Package() {
             </header>
             <section className="packages">
                 {packagesData.map((pkg, index) => {
-                    const imageUrl = `http://localhost:5000/uploads/${pkg.name.replace(/\s+/g, '-')}/1.jpg`;
+                    const imageUrl = `http://localhost:5000/${pkg.imageUrl[0]}`;
                     const summary = pkg.description.length > 100 ? pkg.description.substring(0, 100) + '...' : pkg.description;
                     return (
                         <div key={pkg.id} className="package">
@@ -145,6 +145,7 @@ function Package() {
             </section>
             <section className="reviews">
                 <h2>Reviews</h2>
+                <p>Leave a review for this package:</p>
                 <form onSubmit={handleReviewSubmit}>
                     <select value={selectedPackage} onChange={(e) => setSelectedPackage(e.target.value)} required>
                         <option value="">Select a package</option>
@@ -160,7 +161,9 @@ function Package() {
                     />
                     <div className="rating">
                         <ReactStars
+                            key={rating} // Add key prop to force re-render
                             count={5}
+                            value={rating} // Controlled by the rating state
                             onChange={ratingChanged}
                             size={24}
                             activeColor="#ffd700"
@@ -169,26 +172,33 @@ function Package() {
                     <button type="submit">Submit Review</button>
                 </form>
                 <div className="review-list">
-                    {reviews.map(review => (
-                        <div key={review.id} className="review">
-                            <p>{review.comment}</p>
-                            <div className="rating">
-                                <ReactStars
-                                    count={5}
-                                    value={review.rating}
-                                    size={24}
-                                    edit={false}
-                                    activeColor="#ffd700"
-                                />
-                            </div>
-                            {isAuthenticated && review.userId === user?.id && (
-                                <div>
-                                    <button onClick={() => handleReviewEdit(review.id, prompt('Edit your review:', review.comment), prompt('Edit your rating:', review.rating))}>Edit</button>
-                                    <button onClick={() => handleReviewDelete(review.id)}>Delete</button>
+                    {reviews.length === 0 ? (
+                        <p>No reviews yet. Be the first to leave a review!</p>
+                    ) : (
+                        reviews.map(review => {
+                            console.log('Review userId:', review.userId); // Log the userId from the review
+                            return (
+                                <div key={review.id} className="review">
+                                    <p>{review.comment}</p>
+                                    <div className="rating">
+                                        <ReactStars
+                                            count={5}
+                                            value={review.rating}
+                                            size={24}
+                                            edit={false}
+                                            activeColor="#ffd700"
+                                        />
+                                    </div>
+                                    {review.userId === parseInt(userId) && (
+                                        <div className="review-actions">
+                                            <button className="btn-edit" onClick={() => handleReviewEdit(review.id, prompt('Edit your review:', review.comment), prompt('Edit your rating:', review.rating))}>Edit</button>
+                                            <button className="btn-delete" onClick={() => handleReviewDelete(review.id)}>Delete</button>
+                                        </div>
+                                    )}
                                 </div>
-                            )}
-                        </div>
-                    ))}
+                            );
+                        })
+                    )}
                 </div>
             </section>
             <Footer />

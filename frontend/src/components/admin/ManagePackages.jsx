@@ -93,6 +93,25 @@ const ManagePackages = () => {
     }
   }, [formAction, selectedPackage]);
 
+  // useEffect(() => {
+  //   const handleClickOutside = (event) => {
+  //     if (formRef.current && !formRef.current.contains(event.target)) {
+  //       setShowForm(false);
+  //       setShowOptions(true);
+  //     }
+  //   };
+
+  //   if (showForm) {
+  //     document.addEventListener('mousedown', handleClickOutside);
+  //   } else {
+  //     document.removeEventListener('mousedown', handleClickOutside);
+  //   }
+
+  //   return () => {
+  //     document.removeEventListener('mousedown', handleClickOutside);
+  //   };
+  // }, [showForm]);
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -113,10 +132,9 @@ const ManagePackages = () => {
       return;
     }
     setPackageImageFile(files);
-    const imageUrls = files.map(file => URL.createObjectURL(file));
     setPackageDetails((prevDetails) => ({
       ...prevDetails,
-      imageUrl: [...prevDetails.imageUrl, ...imageUrls]
+      imageUrl: [...prevDetails.imageUrl, ...files.map(file => `uploads/${packageDetails.name.replace(/\s+/g, '-')}/${file.name}`)]
     }));
     console.log('Image Upload:', files);
   };
@@ -160,9 +178,9 @@ const ManagePackages = () => {
       alert('Please upload exactly 6 images.');
       return;
     }
-
+  
     console.log('Saving Package:', packageDetails);
-
+  
     try {
       const formData = new FormData();
       formData.append('name', packageDetails.name);
@@ -178,15 +196,21 @@ const ManagePackages = () => {
         formData.append(`places[${index}][description]`, place.description);
       });
       packageImageFile.forEach((file, index) => {
-        formData.append(`images`, file);
+        formData.append('images', file);
+        console.log(`Appending file: ${file.name}`);
       });
-
+  
+      // Log the FormData content
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ' + pair[1]);
+      }
+  
       const response = formAction === 'Create Package'
         ? await createPackage(formData)
         : await updatePackage(selectedPackage, formData);
-
+  
       console.log('Response:', response);
-
+  
       alert('Package saved successfully');
       setShowForm(false);
       setShowOptions(true);
@@ -195,7 +219,7 @@ const ManagePackages = () => {
       alert('An error occurred while saving the package.');
     }
   };
-
+  
   const fetchPackages = async () => {
     try {
       const response = await fetch('http://localhost:5000/packages');
