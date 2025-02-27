@@ -16,7 +16,7 @@ function Navbar() {
     navigate('/Home');
   };
   const handlePackages = () => {
-    navigate('/Packages');
+    navigate('/Package');
   };
   const handleBooking = () => {
     navigate('/Booking');

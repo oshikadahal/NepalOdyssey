@@ -26,7 +26,8 @@ import Navbar from './components/private/Navbar';
 import Test from './components/private/Test';
 import Package from './components/private/Package';
 import PackageDetails from './components/private/PackageDetails';
-import Profile from './components/private/Profile';
+// import Profile from './components/private/Profile';
+import Profile from "./components/private/Profile"; // Ensure this path is correct
 import Dashboard from './components/admin/Dashboard';
 import ManageUsers from './components/admin/ManageUsers';
 import ManagePackages from './components/admin/ManagePackages';

@@ -3,7 +3,19 @@ import NavBar from '../../assets/images/navbar.jpeg';
 import Navbar from "../../components/private/Navbar";
 import Footer from "../../components/private/Footer";
 import '../../styles/Booking.css';
+// import '../../styles/Toast.css'; // Import toast styles
 import { useNavigate } from "react-router-dom";
+
+// Toast Component
+function Toast({ message, onClose }) {
+    return (
+        <div className="toast-container toast-show">
+            <span className="toast-icon">✅</span>
+            {message}
+            <button className="toast-close" onClick={onClose}>✖</button>
+        </div>
+    );
+}
 
 function Booking() {
     const navigate = useNavigate();
@@ -18,6 +30,7 @@ function Booking() {
     });
 
     const [packageOptions, setPackageOptions] = useState([]);
+    const [showToast, setShowToast] = useState(false);
 
     useEffect(() => {
         const fetchPackages = async () => {
@@ -25,9 +38,9 @@ function Booking() {
                 const token = localStorage.getItem('token');
                 const response = await fetch('http://localhost:5000/packages', {
                     headers: {
-                      'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`
                     }
-                  });
+                });
                 const result = await response.json();
                 if (response.ok) {
                     setPackageOptions(result.data);
@@ -79,8 +92,10 @@ function Booking() {
                 body: formDataToSend
             });
             const result = await response.json();
+
             if (response.ok) {
-                alert(result.message);
+                setShowToast(true); // Show toast on success
+                setTimeout(() => setShowToast(false), 5000); // Hide after 5 sec
                 setFormData({
                     packageName: '',
                     userName: '',
@@ -91,7 +106,7 @@ function Booking() {
                     documentFile: null
                 });
             } else {
-                alert(result.error);
+                alert(result.error || 'Failed to create booking');
             }
         } catch (error) {
             console.error('Error creating booking:', error);
@@ -102,6 +117,9 @@ function Booking() {
     return (
         <div>
             <Navbar />
+            {showToast && (
+                <Toast message="Booking has been done. Booking code has been sent to your email. Visit the office with the provided code." onClose={() => setShowToast(false)} />
+            )}
             <div className="booking-page">
                 <img src={NavBar} alt="navbar" className="booking-image" />
                 <div className="bookcontainer">

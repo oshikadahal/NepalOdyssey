@@ -141,3 +141,45 @@ button.back:hover {
         padding: 10px;
     }
 }
+
+/* Toast Container */
+.toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    background-color: #3149b5; /* Green success color */
+    color: #fff;
+    padding: 15px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+    font-weight: bold;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
+/* Show Toast */
+.toast-show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Toast Icon */
+.toast-icon {
+    margin-right: 10px;
+    font-size: 20px;
+}
+
+/* Close Button */
+.toast-close {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+}

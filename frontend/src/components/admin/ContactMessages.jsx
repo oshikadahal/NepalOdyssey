@@ -11,8 +11,7 @@ const ContactMessages = () => {
       try {
         const response = await fetch('http://localhost:5000/contact');
         const data = await response.json();
-        setMessages(data);
-      } catch (error) {
+        setMessages(data);      } catch (error) {
         console.error('Error fetching messages:', error);
       }
     };
