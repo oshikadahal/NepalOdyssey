@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import userRoutes from "./route/usersroute.js";
+import userRoutes from "./route/usersRoute.js";
 import packageRoutes from "./route/packagesroute.js";
 import contactRoutes from "./route/contactroute.js";
 import bookingRoutes from "./route/bookingroute.js";
