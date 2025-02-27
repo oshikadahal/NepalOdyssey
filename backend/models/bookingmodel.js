@@ -42,4 +42,6 @@ const Booking = sequelize.define('Booking', {
     timestamps: false
 });
 
-export { Booking };
+export { Booking 
+    
+};
